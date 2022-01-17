@@ -15,61 +15,17 @@ const Number = {
         v-bind:class="getClass(number)">
             <span>{{ number }}</span>
         </div>
-    `,
-}
-
-const app = Vue.createApp({
-    components: {
-        Greeting,
-    },
-
-    template: `
-        <div>
-            <h2>Greetings</h2>
-            <greeting name="Isaac" />
-            <greeting name="Issq" />
-        </div>
-        <hr />
-        <div>
-            <h2>Form with validation</h2>
-            <input v-model="value" />
-            <p class="red">{{ error }}</p>
-            <p class="blue">Vwleur: {{ value }}</p>
-        </div>
-        <h1>{{msg}}</h1>
-        <p>{{ count }}</p>
-        <button v-on:click="increment">Increment</button>
-        <div v-if="isEven(count)">Even</div>
-        <div v-else>Odd</div>
         <h2>Even numbers up to 10</h2>
         <div v-for="number in evenList">
             <span>{{ number }}</span>
         </div>
-        <div v-for="name in names">
-            <span>{{ name }}</span>
-        </div>
-        <hr>
-        <h2>All numbers with dynamic class</h2>
-        
     `,
-
     data(){
         return {
-            msg: "Hello World",
-            count: 0,
-            names: ['Adam', 'Issa', 'Babacar', 'Cheriff'],
             numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            value: '',
         }
     },
-
     computed: {
-        error(){
-            if(this.value.length < 5) {
-                return "The input character cannot be less than 5!"
-            }
-        },
-
         evenList() {
             return this.numbers.filter(num => this.isEven(num))
         }
@@ -83,6 +39,95 @@ const app = Vue.createApp({
         getClass(number) {
             return this.isEven(number) ? 'blue' : 'red';
         },
+        isEven(number) {
+            return number % 2 === 0;
+        }
+    }
+}
+
+const People = {
+    template: `
+        <button v-for="person in people"
+        v-on:click="click(person)">
+            <span>{{ person }}</span>
+        </button>
+    `,
+    data(){
+        return {
+            people: ['Adam', 'Zo', 'Joe', 'Ilyass', 'Kady', 'Robert', 'Kan'],
+        }
+    },
+
+    methods: {
+        click(person) {
+            this.$emit('handlePerson', person);
+        },
+    }
+}
+
+const app = Vue.createApp({
+    components: {
+        Greeting,
+        Number,
+        People,
+    },
+
+    template: `
+        <div>
+            <h2>Greetings</h2>
+            <greeting name="Isaac" />
+            <greeting name="Issq" />
+        </div>
+        <hr />
+        <div>
+            <h2>Form with validation</h2>
+            <input v-model="value" />
+            <p class="red">{{ error }}</p>
+            <p class="blue">Valeur: {{ value }}</p>
+        </div>
+        <h1>{{msg}}</h1>
+        <p>{{ count }}</p>
+        <button v-on:click="increment">Increment</button>
+        <div v-if="isEven(count)">Even</div>
+        <div v-else>Odd</div>
+        <div v-for="name in names">
+            <span>{{ name }}</span>
+        </div>
+        <hr>
+        <h2>From Number component</h2>
+        <number />
+        <hr />
+        <h2>Person</h2>
+        <people v-on:handlePerson="handlePerson" />
+        <br />
+        <h4>Person Event</h4>
+        <p v-for="person in people">
+            You have just clicked on <em>{{ person }}</em>
+        </p>
+    `,
+
+    data(){
+        return {
+            msg: "Hello World",
+            count: 0,
+            names: ['Adam', 'Issa', 'Babacar', 'Cheriff'],
+            value: '',
+            people: [],
+        }
+    },
+
+    computed: {
+        error(){
+            if(this.value.length < 5) {
+                return "The input character cannot be less than 5!"
+            }
+        },
+    },
+
+    methods: {
+        /*input($event) {
+            this.value = $event.target.value;
+        },*/
 
         increment() {
             this.count += 1;
@@ -90,6 +135,10 @@ const app = Vue.createApp({
 
         isEven(number) {
             return number % 2 === 0;
+        },
+
+        handlePerson(person) {
+            this.people.push(person);
         }
     }
 });
